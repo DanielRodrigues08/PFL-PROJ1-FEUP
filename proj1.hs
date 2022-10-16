@@ -1,6 +1,6 @@
 --imports
 import Data.List
-import Data.Set
+import Data.Set hiding (filter, map)
 
 --
 
@@ -36,13 +36,12 @@ sortPolynomial :: Polynomial -> Polynomial
 sortPolynomial = sortBy compareMonomial
 
 removeZeroCoefficient :: Polynomial -> Polynomial
-removeZeroCoefficient p1 = [x | x <- p1, fst x /= 0]
+removeZeroCoefficient = filter (\x -> fst x == 0)
+
+--TODO removeZeroLiterals
 
 sumListMonomials :: [Monomial] -> Monomial
 sumListMonomials = foldl1 (\acc x -> if equalLiteral acc x then (fst acc + fst x, snd acc) else error "The literal part of the monomials are different!")
-
---prodMonomials :: Monomial -> Monomial -> Monomial
---prodMonomials m1 m2 = 
 
 reducePolynomial :: Polynomial -> Polynomial
 reducePolynomial [] = []
@@ -53,3 +52,11 @@ normalizePolynomial p1 = sortPolynomial (removeZeroCoefficient (reducePolynomial
 
 sumPolynomials :: Polynomial -> Polynomial -> Polynomial
 sumPolynomials p1 p2 = normalizePolynomial (p1 ++ p2)
+
+reduceProdLiterals :: [Literal] -> [Literal]
+reduceProdLiterals [] = []
+reduceProdLiterals (x : xs) = (fst x, snd x + sum [snd y | y <- xs, fst y == fst x]) : reduceProdLiterals ([y | y <- xs, fst y /= fst x])
+
+prodMonomials :: Monomial -> Monomial -> Monomial
+prodMonomials m1 m2 = (fst m1 * fst m2, reduceProdLiterals (snd m1 ++ snd m2))
+
