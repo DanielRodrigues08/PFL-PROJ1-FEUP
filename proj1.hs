@@ -1,7 +1,6 @@
 --imports
 import Data.List
 import Data.Set
-import Text.XHtml.Transitional (red)
 
 --
 
@@ -42,9 +41,15 @@ removeZeroCoefficient polinomial = [x | x <- polinomial, fst x /= 0]
 sumListMonomials :: [Monomial] -> Monomial
 sumListMonomials = foldl1 (\acc x -> if equalLiteral acc x then (fst acc + fst x, snd acc) else error "The literal part of the monomials are different!")
 
+--prodMonomials :: Monomial -> Monomial -> Monomial
+--prodMonomials m1 m2 = 
+
 reducePolinomial :: Polinomial -> Polinomial
 reducePolinomial [] = []
 reducePolinomial (x : xs) = sumListMonomials (x : [y | y <- xs, equalLiteral x y]) : reducePolinomial [y | y <- xs, not (equalLiteral x y)]
 
 normalizePolinomial :: Polinomial -> Polinomial
-normalizePolinomial p1 = sortPolinomial (reducePolinomial (removeZeroCoefficient p1))
+normalizePolinomial p1 = sortPolinomial (removeZeroCoefficient (reducePolinomial p1))
+
+sumPolinomials :: Polinomial -> Polinomial -> Polinomial
+sumPolinomials p1 p2 = normalizePolinomial (p1 ++ p2)
