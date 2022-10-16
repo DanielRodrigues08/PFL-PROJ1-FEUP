@@ -50,8 +50,8 @@ reducePolynomial (x : xs) = sumListMonomials (x : [y | y <- xs, equalLiteral x y
 normalizePolynomial :: Polynomial -> Polynomial
 normalizePolynomial p1 = sortPolynomial (removeZeroCoefficient (reducePolynomial p1))
 
-sumPolynomials :: Polynomial -> Polynomial -> Polynomial
-sumPolynomials p1 p2 = normalizePolynomial (p1 ++ p2)
+sumPolynomials :: [Polynomial] -> Polynomial
+sumPolynomials p1 = normalizePolynomial (foldl1 (++) p1)
 
 reduceProdLiterals :: [Literal] -> [Literal]
 reduceProdLiterals [] = []
@@ -59,4 +59,3 @@ reduceProdLiterals (x : xs) = (fst x, snd x + sum [snd y | y <- xs, fst y == fst
 
 prodMonomials :: Monomial -> Monomial -> Monomial
 prodMonomials m1 m2 = (fst m1 * fst m2, reduceProdLiterals (snd m1 ++ snd m2))
-
