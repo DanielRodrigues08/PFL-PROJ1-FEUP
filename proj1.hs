@@ -10,8 +10,8 @@ type Literal = (Char, Int)
 -- Monomial -> (coefficient, list literal)
 type Monomial = (Int, [Literal])
 
--- Polinomial -> list Monomial
-type Polinomial = [Monomial]
+-- Polynomial -> list Monomial
+type Polynomial = [Monomial]
 
 degree :: Monomial -> Int
 degree monomial = sum [snd x | x <- snd monomial]
@@ -32,11 +32,11 @@ compareMonomial m1 m2
     c1 = fst m1
     c2 = fst m2
 
-sortPolinomial :: Polinomial -> Polinomial
-sortPolinomial = sortBy compareMonomial
+sortPolynomial :: Polynomial -> Polynomial
+sortPolynomial = sortBy compareMonomial
 
-removeZeroCoefficient :: Polinomial -> Polinomial
-removeZeroCoefficient polinomial = [x | x <- polinomial, fst x /= 0]
+removeZeroCoefficient :: Polynomial -> Polynomial
+removeZeroCoefficient p1 = [x | x <- p1, fst x /= 0]
 
 sumListMonomials :: [Monomial] -> Monomial
 sumListMonomials = foldl1 (\acc x -> if equalLiteral acc x then (fst acc + fst x, snd acc) else error "The literal part of the monomials are different!")
@@ -44,12 +44,12 @@ sumListMonomials = foldl1 (\acc x -> if equalLiteral acc x then (fst acc + fst x
 --prodMonomials :: Monomial -> Monomial -> Monomial
 --prodMonomials m1 m2 = 
 
-reducePolinomial :: Polinomial -> Polinomial
-reducePolinomial [] = []
-reducePolinomial (x : xs) = sumListMonomials (x : [y | y <- xs, equalLiteral x y]) : reducePolinomial [y | y <- xs, not (equalLiteral x y)]
+reducePolynomial :: Polynomial -> Polynomial
+reducePolynomial [] = []
+reducePolynomial (x : xs) = sumListMonomials (x : [y | y <- xs, equalLiteral x y]) : reducePolynomial [y | y <- xs, not (equalLiteral x y)]
 
-normalizePolinomial :: Polinomial -> Polinomial
-normalizePolinomial p1 = sortPolinomial (removeZeroCoefficient (reducePolinomial p1))
+normalizePolynomial :: Polynomial -> Polynomial
+normalizePolynomial p1 = sortPolynomial (removeZeroCoefficient (reducePolynomial p1))
 
-sumPolinomials :: Polinomial -> Polinomial -> Polinomial
-sumPolinomials p1 p2 = normalizePolinomial (p1 ++ p2)
+sumPolynomials :: Polynomial -> Polynomial -> Polynomial
+sumPolynomials p1 p2 = normalizePolynomial (p1 ++ p2)
