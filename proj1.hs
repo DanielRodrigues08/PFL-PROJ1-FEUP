@@ -1,8 +1,5 @@
---imports
 import Data.List
 import Data.Set hiding (filter, map)
-
---
 
 -- Literal -> (letter, exponent)
 type Literal = (Char, Int)
@@ -36,9 +33,10 @@ sortPolynomial :: Polynomial -> Polynomial
 sortPolynomial = sortBy compareMonomial
 
 removeZeroCoefficient :: Polynomial -> Polynomial
-removeZeroCoefficient = filter (\x -> fst x == 0)
+removeZeroCoefficient = filter (\x -> fst x /= 0)
 
---TODO removeZeroLiterals
+removeZeroLiterals :: Polynomial -> Polynomial
+removeZeroLiterals p1 = [(fst m1, filter (\x -> snd x /= 0) (snd m1)) | m1 <- p1]
 
 sumListMonomials :: [Monomial] -> Monomial
 sumListMonomials = foldl1 (\acc x -> if equalLiteral acc x then (fst acc + fst x, snd acc) else error "The literal part of the monomials are different!")
@@ -48,14 +46,27 @@ reducePolynomial [] = []
 reducePolynomial (x : xs) = sumListMonomials (x : [y | y <- xs, equalLiteral x y]) : reducePolynomial [y | y <- xs, not (equalLiteral x y)]
 
 normalizePolynomial :: Polynomial -> Polynomial
-normalizePolynomial p1 = sortPolynomial (removeZeroCoefficient (reducePolynomial p1))
+normalizePolynomial p1 = sortPolynomial . removeZeroLiterals . removeZeroCoefficient $ reducePolynomial p1
+
+sum2Polynomials :: Polynomial -> Polynomial -> Polynomial
+sum2Polynomials p1 p2 = normalizePolynomial (p1 ++ p2)
 
 sumPolynomials :: [Polynomial] -> Polynomial
 sumPolynomials p1 = normalizePolynomial (foldl1 (++) p1)
 
 reduceProdLiterals :: [Literal] -> [Literal]
 reduceProdLiterals [] = []
-reduceProdLiterals (x : xs) = (fst x, snd x + sum [snd y | y <- xs, fst y == fst x]) : reduceProdLiterals ([y | y <- xs, fst y /= fst x])
+reduceProdLiterals (x : xs)
+  | snd a == 0 = reduceProdLiterals ([y | y <- xs, fst y /= fst x])
+  | otherwise = a : reduceProdLiterals ([y | y <- xs, fst y /= fst x])
+  where
+    a = (fst x, snd x + sum [snd y | y <- xs, fst y == fst x])
 
-prodMonomials :: Monomial -> Monomial -> Monomial
-prodMonomials m1 m2 = (fst m1 * fst m2, reduceProdLiterals (snd m1 ++ snd m2))
+prod2Monomials :: Monomial -> Monomial -> Monomial
+prod2Monomials m1 m2 = (fst m1 * fst m2, reduceProdLiterals (snd m1 ++ snd m2))
+
+prod2Polynomials :: Polynomial -> Polynomial -> Polynomial
+prod2Polynomials p1 p2 = normalizePolynomial [prod2Monomials x y | x <- p1, y <- p2]
+
+prodPolynomials :: [Polynomial] -> Polynomial
+prodPolynomials = foldl1 prod2Polynomials
