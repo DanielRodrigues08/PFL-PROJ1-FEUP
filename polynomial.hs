@@ -1,3 +1,7 @@
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+
+{-# HLINT ignore "Use second" #-}
+{-# HLINT ignore "Avoid lambda using `infix`" #-}
 module Polynomial
   ( sum2Polynomials,
     sumPolynomials,
@@ -94,5 +98,8 @@ derivPolynomial l p1 = normalizePolynomial [derivMonomial l x | x <- p1]
 parsePolynomial :: String -> Polynomial
 parsePolynomial input = []
 
+outMonomial :: Monomial -> String
+outMonomial m = show (fst m) ++ concat [fst x : "^" ++ show (snd x) | x <- snd m]
+
 outPolynomial :: Polynomial -> String
-outPolynomial p1 = ""
+outPolynomial p1 = Data.List.foldr (\x acc -> if length acc /= 0 then x ++ " + " ++ acc else x ++ acc ) "" (map outMonomial p1)
