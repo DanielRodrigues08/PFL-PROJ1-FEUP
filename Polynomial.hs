@@ -1,3 +1,17 @@
+module Polynomial
+  ( Literal,
+    Monomial,
+    Polynomial,
+    sum2Polynomials,
+    sumPolynomials,
+    prod2Polynomials,
+    prodPolynomials,
+    derivPolynomials,
+    parsePolynomial,
+    outPolynomial,
+  )
+where
+
 import Data.List
 import Data.Set hiding (filter, map)
 
@@ -79,3 +93,9 @@ derivMonomials l m1 = if any (\n -> n == l) [i | (i, j) <- snd m1] then (fst m1 
 
 derivPolynomials :: Char -> Polynomial -> Polynomial
 derivPolynomials l p1 = normalizePolynomial [derivMonomials l x | x <- p1]
+
+parsePolynomial :: String -> Polynomial
+parsePolynomial input = []
+
+outPolynomial :: Polynomial -> String
+outPolynomial p1 = []
