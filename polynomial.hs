@@ -99,7 +99,7 @@ parsePolynomial :: String -> Polynomial
 parsePolynomial input = []
 
 outMonomial :: Monomial -> String
-outMonomial m = show (fst m) ++ concat [fst x : "^" ++ show (snd x) | x <- snd m]
+outMonomial m = (if fst m == 1 then "" else show (fst m)) ++ concat [if snd x > 1 then fst x : "^" ++ show (snd x) else fst x : "" | x <- snd m]
 
 outPolynomial :: Polynomial -> String
-outPolynomial p1 = Data.List.foldr (\x acc -> if length acc /= 0 then x ++ " + " ++ acc else x ++ acc ) "" (map outMonomial p1)
+outPolynomial p1 = Data.List.foldr (\x acc -> if length acc /= 0 then x ++ " + " ++ acc else x ++ acc) "" (map outMonomial p1)
