@@ -1,12 +1,9 @@
 module Polynomial
-  ( Literal,
-    Monomial,
-    Polynomial,
-    sum2Polynomials,
+  ( sum2Polynomials,
     sumPolynomials,
     prod2Polynomials,
     prodPolynomials,
-    derivPolynomials,
+    derivPolynomial,
     parsePolynomial,
     outPolynomial,
   )
@@ -88,14 +85,14 @@ prodPolynomials = foldl1 prod2Polynomials
 reduceDerivLiterals :: Char -> [Literal] -> [Literal]
 reduceDerivLiterals l l1 = [(i, j -1) | (i, j) <- l1, i == l] ++ [(i, j) | (i, j) <- l1, i /= l]
 
-derivMonomials :: Char -> Monomial -> Monomial
-derivMonomials l m1 = if any (\n -> n == l) [i | (i, j) <- snd m1] then (fst m1 * head [j | (i, j) <- snd m1, i == l], reduceDerivLiterals l (snd m1)) else (0, [])
+derivMonomial :: Char -> Monomial -> Monomial
+derivMonomial l m1 = if any (\n -> n == l) [i | (i, j) <- snd m1] then (fst m1 * head [j | (i, j) <- snd m1, i == l], reduceDerivLiterals l (snd m1)) else (0, [])
 
-derivPolynomials :: Char -> Polynomial -> Polynomial
-derivPolynomials l p1 = normalizePolynomial [derivMonomials l x | x <- p1]
+derivPolynomial :: Char -> Polynomial -> Polynomial
+derivPolynomial l p1 = normalizePolynomial [derivMonomial l x | x <- p1]
 
 parsePolynomial :: String -> Polynomial
 parsePolynomial input = []
 
 outPolynomial :: Polynomial -> String
-outPolynomial p1 = []
+outPolynomial p1 = ""
