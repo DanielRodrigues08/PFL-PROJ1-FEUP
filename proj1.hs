@@ -13,7 +13,7 @@ type Polynomial = [Monomial]
 degree :: Monomial -> Int
 degree monomial = sum [snd x | x <- snd monomial]
 
-equalLiteral :: Monomial -> Monomial -> Bool -- PQ não pode ser Monomial a => a -> a -> Bool
+equalLiteral :: Monomial -> Monomial -> Bool
 equalLiteral monomial1 monomial2 = fromList (snd monomial1) == fromList (snd monomial2)
 
 compareMonomial :: Monomial -> Monomial -> Ordering
@@ -72,7 +72,7 @@ prodPolynomials :: [Polynomial] -> Polynomial
 prodPolynomials = foldl1 prod2Polynomials
 
 reduceDerivLiterals :: Char -> [Literal] -> [Literal]
-reduceDerivLiterals l l1 = [(i, j -1) | (i, j) <- l1, i == l] ++ [(i, j) | (i, j) <- l1, not (i == l)]
+reduceDerivLiterals l l1 = [(i, j -1) | (i, j) <- l1, i == l] ++ [(i, j) | (i, j) <- l1, i /= l]
 
 derivMonomials :: Char -> Monomial -> Monomial
 derivMonomials l m1 = if any (\n -> n == l) [i | (i, j) <- snd m1] then (fst m1 * head [j | (i, j) <- snd m1, i == l], reduceDerivLiterals l (snd m1)) else (0, [])
