@@ -2,19 +2,23 @@
 
 {-# HLINT ignore "Use second" #-}
 {-# HLINT ignore "Avoid lambda using `infix`" #-}
+{-# HLINT ignore "Redundant bracket" #-}
+{-# HLINT ignore "Use null" #-}
 module Polynomial
   ( sum2Polynomials,
     sumPolynomials,
     prod2Polynomials,
     prodPolynomials,
     derivPolynomial,
-    parsePolynomial,
+    --parsePolynomial,
     outPolynomial,
   )
 where
 
+import Data.Char
 import Data.List
 import Data.Set hiding (filter, map)
+import Data.String (IsString (fromString))
 
 -- Literal -> (letter, exponent)
 type Literal = (Char, Int)
@@ -95,11 +99,18 @@ derivMonomial l m1 = if any (\n -> n == l) [i | (i, j) <- snd m1] then (fst m1 *
 derivPolynomial :: Char -> Polynomial -> Polynomial
 derivPolynomial l p1 = normalizePolynomial [derivMonomial l x | x <- p1]
 
-parsePolynomial :: String -> Polynomial
-parsePolynomial input = []
-
 outMonomial :: Monomial -> String
 outMonomial m = (if fst m == 1 then "" else show (fst m)) ++ concat [if snd x > 1 then fst x : "^" ++ show (snd x) else fst x : "" | x <- snd m]
 
 outPolynomial :: Polynomial -> String
 outPolynomial p1 = Data.List.foldr (\x acc -> if length acc /= 0 then x ++ " + " ++ acc else x ++ acc) "" (map outMonomial p1)
+
+parseMonomial :: String -> [Literal]
+parseMonomial s
+  | length s == 0 = []
+  | length s == 1 = [(head s, 1)]
+  | otherwise = a : parseMonomial (dropWhile (not . isAlpha) (tail s))
+  where
+    a = if head (tail s) /= '^' then (head s, 1) else (head s, 2)
+
+--(head s, takeWhile isDigit (tail (tail s)))
