@@ -4,7 +4,7 @@ module Polynomial
     prod2Polynomials,
     prodPolynomials,
     derivPolynomial,
-    --parsePolynomial,
+    parsePolynomial,
     outPolynomial,
   )
 where
@@ -12,22 +12,18 @@ where
 import Data.Char
 import Data.List
 import Data.List.Split
-import Data.Set hiding (drop, filter, map)
+import Data.Set hiding (drop, filter, foldl, map)
 
--- Literal -> (letter, exponent)
 type Literal = (Char, Int)
 
--- Monomial -> (coefficient, list literal)
 type Monomial = (Int, [Literal])
 
--- Polynomial -> list Monomial
 type Polynomial = [Monomial]
 
-degree :: Monomial -> Int
-degree monomial = sum [snd x | x <- snd monomial]
+--Utils
 
-equalLiteral :: Monomial -> Monomial -> Bool
-equalLiteral monomial1 monomial2 = fromList (snd monomial1) == fromList (snd monomial2)
+degree :: Monomial -> Int
+degree m = foldl (\acc x -> acc + snd x) 0 (snd m)
 
 compareMonomial :: Monomial -> Monomial -> Ordering
 compareMonomial m1 m2
@@ -50,6 +46,9 @@ removeZeroCoefficient = filter (\x -> fst x /= 0)
 
 removeZeroLiterals :: Polynomial -> Polynomial
 removeZeroLiterals p1 = [(fst m1, filter (\x -> snd x /= 0) (snd m1)) | m1 <- p1]
+
+equalLiteral :: Monomial -> Monomial -> Bool
+equalLiteral m1 m2 = fromList (snd m1) == fromList (snd m2)
 
 sumListMonomials :: [Monomial] -> Monomial
 sumListMonomials = foldl1 (\acc x -> if equalLiteral acc x then (fst acc + fst x, snd acc) else error "The literal part of the monomials are different!")

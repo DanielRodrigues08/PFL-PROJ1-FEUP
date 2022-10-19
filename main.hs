@@ -10,15 +10,15 @@ main = do
     then do
       putStrLn "Letter?"
       letter <- getChar
-      putStrLn $ outPolynomial (derivPolynomial letter (parsePolynomial poly1))
+      putStrLn $ "Result: " ++ outPolynomial (derivPolynomial letter (parsePolynomial poly1))
     else do
       putStrLn "Poly2 ?"
       poly2 <- getLine
       if operator == "sum"
         then do
-          putStrLn $ outPolynomial (sum2Polynomials (parsePolynomial poly1) (parsePolynomial poly2))
+          putStrLn $ "Result: " ++ outPolynomial (sum2Polynomials (parsePolynomial poly1) (parsePolynomial poly2))
         else
           if operator == "prod"
             then do
-              putStrLn $ outPolynomial (prod2Polynomials (parsePolynomial poly1) (parsePolynomial poly2))
+              putStrLn $ "Result: " ++ outPolynomial (prod2Polynomials (parsePolynomial poly1) (parsePolynomial poly2))
             else putStrLn "Invalid Operation!"
