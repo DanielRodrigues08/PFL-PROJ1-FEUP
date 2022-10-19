@@ -1,9 +1,3 @@
-{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
-
-{-# HLINT ignore "Use second" #-}
-{-# HLINT ignore "Avoid lambda using `infix`" #-}
-{-# HLINT ignore "Redundant bracket" #-}
-{-# HLINT ignore "Use null" #-}
 module Polynomial
   ( sum2Polynomials,
     sumPolynomials,
@@ -17,8 +11,8 @@ where
 
 import Data.Char
 import Data.List
-import Data.Set hiding (filter, map)
-import Data.String (IsString (fromString))
+import Data.List.Split
+import Data.Set hiding (drop, filter, map)
 
 -- Literal -> (letter, exponent)
 type Literal = (Char, Int)
@@ -105,12 +99,18 @@ outMonomial m = (if fst m == 1 then "" else show (fst m)) ++ concat [if snd x > 
 outPolynomial :: Polynomial -> String
 outPolynomial p1 = Data.List.foldr (\x acc -> if length acc /= 0 then x ++ " + " ++ acc else x ++ acc) "" (map outMonomial p1)
 
-parseMonomial :: String -> [Literal]
-parseMonomial s
-  | length s == 0 = []
+parseLiteral :: String -> [Literal]
+parseLiteral "" = []
+parseLiteral s
   | length s == 1 = [(head s, 1)]
-  | otherwise = a : parseMonomial (dropWhile (not . isAlpha) (tail s))
+  | otherwise = a : parseLiteral (dropWhile (not . isAlpha) (tail s))
   where
-    a = if head (tail s) /= '^' then (head s, 1) else (head s, 2)
+    a = if s !! 1 /= '^' then (head s, 1) else (head s, read (takeWhile isDigit (drop 2 s)))
 
---(head s, takeWhile isDigit (tail (tail s)))
+parseMonomial :: String -> Monomial
+parseMonomial s = (if a == "" then 1 else read a, parseLiteral (drop (length a) s))
+  where
+    a = takeWhile (not . isAlpha) s
+
+parsePolynomial :: String -> Polynomial
+parsePolynomial s = map parseMonomial (splitOn " + " s)
