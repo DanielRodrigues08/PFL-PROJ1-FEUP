@@ -58,7 +58,7 @@ reducePolynomial [] = []
 reducePolynomial (x : xs) = sumListMonomials (x : [y | y <- xs, equalLiteral x y]) : reducePolynomial [y | y <- xs, not (equalLiteral x y)]
 
 normalizePolynomial :: Polynomial -> Polynomial
-normalizePolynomial p1 = sortPolynomial . removeZeroLiterals . removeZeroCoefficient $ reducePolynomial p1
+normalizePolynomial p1 = sortPolynomial . removeZeroLiterals . removeZeroCoefficient . reducePolynomial $ removeZeroLiterals p1
 
 sum2Polynomials :: Polynomial -> Polynomial -> Polynomial
 sum2Polynomials p1 p2 = normalizePolynomial (p1 ++ p2)
