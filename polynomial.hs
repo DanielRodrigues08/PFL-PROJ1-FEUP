@@ -12,7 +12,7 @@ where
 import Data.Char
 import Data.List
 import Data.List.Split
-import Data.Set hiding (drop, filter, foldl, map)
+import Data.Set hiding (drop, filter, foldl, foldr, map, null)
 
 type Literal = (Char, Int)
 
@@ -93,10 +93,10 @@ derivPolynomial :: Char -> Polynomial -> Polynomial
 derivPolynomial l p1 = normalizePolynomial [derivMonomial l x | x <- p1]
 
 outMonomial :: Monomial -> String
-outMonomial m = (if fst m == 1 then "" else show (fst m)) ++ concat [if snd x > 1 then fst x : "^" ++ show (snd x) else fst x : "" | x <- snd m]
+outMonomial m = (if fst m == 1 then "" else if fst m == -1 then "-" else show (fst m)) ++ concat [if snd x > 1 then fst x : "^" ++ show (snd x) else fst x : "" | x <- snd m]
 
 outPolynomial :: Polynomial -> String
-outPolynomial p1 = Data.List.foldr (\x acc -> if length acc /= 0 then x ++ " + " ++ acc else x ++ acc) "" (map outMonomial p1)
+outPolynomial p1 = foldl (\acc x -> if not (null acc) then (if head x == '-' then acc ++ " - " ++ tail x else acc ++ " + " ++ x) else acc ++ x) "" (map outMonomial p1)
 
 parseLiteral :: String -> [Literal]
 parseLiteral "" = []
@@ -112,4 +112,14 @@ parseMonomial s = (if a == "" then 1 else read a, parseLiteral (drop (length a) 
     a = takeWhile (not . isAlpha) s
 
 parsePolynomial :: String -> Polynomial
-parsePolynomial s = map parseMonomial (splitOn " + " s)
+parsePolynomial p1 = parsePolynomialAux (filter (/= ' ') p1)
+
+parsePolynomialAux :: String -> Polynomial
+parsePolynomialAux "" = []
+parsePolynomialAux p1 = parseMonomial a : parsePolynomialAux (drop b p1)
+  where
+    a
+      | head p1 == '+' = takeWhile (\x -> (x /= '+') && (x /= '-')) (tail p1)
+      | head p1 == '-' = '-' : takeWhile (\x -> (x /= '+') && (x /= '-')) (tail p1)
+      | otherwise = takeWhile (\x -> (x /= '+') && (x /= '-')) p1
+    b = if head p1 == '+' || head p1 == '-' then length a + 1 else length a
