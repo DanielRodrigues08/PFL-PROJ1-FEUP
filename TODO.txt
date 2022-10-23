@@ -1,4 +1,0 @@
-- criar função para verificar se as duas listas têm monómios iguais
-- ver que packet tem se intalar no computador do dani para meter a correr o quickCheck e meter no relatório
-- verificar testes
-- criar mais testes
