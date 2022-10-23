@@ -110,7 +110,7 @@ prodPolynomials p1
 
 -------------------------------- deriv --------------------------------------
 
-reduceDerivLiterals :: Char -> [Literal] -> [Literal] -- Modifica a parte literal do monómio 
+reduceDerivLiterals :: Char -> [Literal] -> [Literal] -- Modifica a parte literal do monómio consoante a derivação do monómio 
 reduceDerivLiterals l l1 = [(i, j -1) | (i, j) <- l1, i == l] ++ [(i, j) | (i, j) <- l1, i /= l]
 
 derivMonomial :: Char -> Monomial -> Monomial -- Deriva um monómio em função de uma variável 
