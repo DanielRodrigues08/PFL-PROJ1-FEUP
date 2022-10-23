@@ -8,7 +8,7 @@ module Polynomial
     outPolynomial,
     normalizePolynomial,
     equal2Polynomial,
-    Polynomial
+    Polynomial,
   )
 where
 
@@ -54,20 +54,33 @@ equalMonomial m1 m2 = fst m1 == fst m2 && equalLiteral m1 m2
 equal2Polynomial :: Polynomial -> Polynomial -> Bool
 equal2Polynomial p1 p2 = length p1 == length p2 && foldl (&&) True (zipWith equalMonomial (sortPolynomial p1) (sortPolynomial p2))
 
-removeZeroCoefficient :: Polynomial -> Polynomial
-removeZeroCoefficient = filter (\x -> fst x /= 0)
+--removeZeroCoefficient :: Polynomial -> Polynomial
+--removeZeroCoefficient = filter (\x -> fst x /= 0)
 
-removeZeroLiterals :: Polynomial -> Polynomial
-removeZeroLiterals p1 = [(fst m1, filter (\x -> snd x /= 0) (snd m1)) | m1 <- p1]
+--removeZeroLiterals :: Polynomial -> Polynomial
+--removeZeroLiterals p1 = [(fst m1, filter (\x -> snd x /= 0) (snd m1)) | m1 <- p1]
 
 ------------------------------- normalize -----------------------------------
 
+reduceLiterals :: [Literal] -> [Literal]
+reduceLiterals [] = []
+reduceLiterals (x : xs) = if snd a /= 0 then a : b else b
+  where
+    a = (fst x, snd x + sum [snd y | y <- xs, fst y == fst x])
+    b = reduceLiterals ([y | y <- xs, fst y /= fst x])
+
+reduceLiteralsPolynomial :: Polynomial -> Polynomial
+reduceLiteralsPolynomial p1 = [(fst y, reduceLiterals (snd y)) | y <- p1, fst y /= 0]
+
 reducePolynomial :: Polynomial -> Polynomial
 reducePolynomial [] = []
-reducePolynomial (x : xs) = sumListMonomials (x : [y | y <- xs, equalLiteral x y]) : reducePolynomial [y | y <- xs, not (equalLiteral x y)]
+reducePolynomial (x : xs) = if fst a /= 0 then a : b else b
+  where
+    a = sumListMonomials (x : [y | y <- xs, equalLiteral x y])
+    b = reducePolynomial [y | y <- xs, not (equalLiteral x y)]
 
 normalizePolynomial :: Polynomial -> Polynomial
-normalizePolynomial = sortPolynomial . removeZeroLiterals . removeZeroCoefficient . reducePolynomial . removeZeroLiterals
+normalizePolynomial = sortPolynomial . reducePolynomial . reduceLiteralsPolynomial
 
 -------------------------------- sum ----------------------------------------
 
