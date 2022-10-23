@@ -110,13 +110,13 @@ prodPolynomials p1
 
 -------------------------------- deriv --------------------------------------
 
-reduceDerivLiterals :: Char -> [Literal] -> [Literal] -- 
+reduceDerivLiterals :: Char -> [Literal] -> [Literal] -- Modifica a parte literal do monómio 
 reduceDerivLiterals l l1 = [(i, j -1) | (i, j) <- l1, i == l] ++ [(i, j) | (i, j) <- l1, i /= l]
 
-derivMonomial :: Char -> Monomial -> Monomial -- 
+derivMonomial :: Char -> Monomial -> Monomial -- Deriva um monómio em função de uma variável 
 derivMonomial l m1 = if any (== l) [i | (i, j) <- snd m1] then (fst m1 * head [j | (i, j) <- snd m1, i == l], reduceDerivLiterals l (snd m1)) else (0, [])
 
-derivPolynomial :: Char -> Polynomial -> Polynomial -- 
+derivPolynomial :: Char -> Polynomial -> Polynomial -- Deriva um polinómio em função de uma variável
 derivPolynomial l p1 = normalizePolynomial [derivMonomial l x | x <- normalizePolynomial p1]
 
 -------------------------------- Parse --------------------------------------
