@@ -16,6 +16,8 @@ import Data.List
 import Data.Set hiding (drop, filter, foldl, foldr, map, null)
 import Test.QuickCheck
 
+--Types
+
 type Literal = (Char, Int)
 
 type Monomial = (Int, [Literal])
@@ -148,6 +150,18 @@ parsePolynomialAux p1 = parseMonomial a : parsePolynomialAux (drop b p1)
     b = if head p1 == '+' || head p1 == '-' then length a + 1 else length a
 
 
+------------------------------- normalize -----------------------------------
+
+-------------------------------- sum ----------------------------------------
+
+-------------------------------- prod ---------------------------------------
+
+-------------------------------- deriv --------------------------------------
+
+
+
+
+------------------------------------- Tests ------------------------------------
 
 ----------------------------------------norm-------------------------------------
 
