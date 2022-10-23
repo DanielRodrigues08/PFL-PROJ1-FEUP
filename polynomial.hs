@@ -46,6 +46,12 @@ sortPolynomial = sortBy compareMonomial
 equalLiteral :: Monomial -> Monomial -> Bool
 equalLiteral m1 m2 = fromList (snd m1) == fromList (snd m2)
 
+equalMonomial :: Monomial -> Monomial -> Bool
+equalMonomial m1 m2 = fst m1 == fst m2 && equalLiteral m1 m2
+
+equal2Polynomial :: Polynomial -> Polynomial -> Bool
+equal2Polynomial p1 p2 = length p1 == length p2 && foldl (&&) True (zipWith equalMonomial (sortPolynomial p1) (sortPolynomial p2))
+
 removeZeroCoefficient :: Polynomial -> Polynomial
 removeZeroCoefficient = filter (\x -> fst x /= 0)
 
@@ -59,7 +65,7 @@ reducePolynomial [] = []
 reducePolynomial (x : xs) = sumListMonomials (x : [y | y <- xs, equalLiteral x y]) : reducePolynomial [y | y <- xs, not (equalLiteral x y)]
 
 normalizePolynomial :: Polynomial -> Polynomial
-normalizePolynomial p1 = sortPolynomial . removeZeroLiterals . removeZeroCoefficient . reducePolynomial $ removeZeroLiterals p1
+normalizePolynomial = sortPolynomial . removeZeroLiterals . removeZeroCoefficient . reducePolynomial . removeZeroLiterals
 
 -------------------------------- sum ----------------------------------------
 
@@ -99,7 +105,7 @@ reduceDerivLiterals :: Char -> [Literal] -> [Literal]
 reduceDerivLiterals l l1 = [(i, j -1) | (i, j) <- l1, i == l] ++ [(i, j) | (i, j) <- l1, i /= l]
 
 derivMonomial :: Char -> Monomial -> Monomial
-derivMonomial l m1 = if any (\n -> n == l) [i | (i, j) <- snd m1] then (fst m1 * head [j | (i, j) <- snd m1, i == l], reduceDerivLiterals l (snd m1)) else (0, [])
+derivMonomial l m1 = if any (== l) [i | (i, j) <- snd m1] then (fst m1 * head [j | (i, j) <- snd m1, i == l], reduceDerivLiterals l (snd m1)) else (0, [])
 
 derivPolynomial :: Char -> Polynomial -> Polynomial
 derivPolynomial l p1 = normalizePolynomial [derivMonomial l x | x <- normalizePolynomial p1]
