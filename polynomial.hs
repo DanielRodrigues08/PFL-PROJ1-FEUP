@@ -7,6 +7,8 @@ module Polynomial
     parsePolynomial,
     outPolynomial,
     normalizePolynomial,
+    equal2Polynomial,
+    Polynomial
   )
 where
 
