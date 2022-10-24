@@ -51,10 +51,3 @@ prop_dev3 = equal2Polynomial (derivPolynomial 'o' [(1, [('o', 0), ('c', 1)]), (-
 prop_dev4 :: Bool
 prop_dev4 = equal2Polynomial (derivPolynomial 'x' [(2, [('x', 0), ('p', 1)]), (-4, [('x', 0)]), (2, []), (-4, [('i', 19)])]) []
 
------------------------------------------teste------------------------
-
-prop_associativity_mult :: Polynomial -> Polynomial -> Bool
-prop_associativity_mult p1 p2 = equal2Polynomial (prod2Polynomials p1 p2) (prod2Polynomials p2 p1)
-
-prop_associativity_sum :: Polynomial -> Polynomial -> Bool
-prop_associativity_sum p1 p2 = equal2Polynomial (sum2Polynomials p1 p2) (sum2Polynomials p2 p1)

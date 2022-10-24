@@ -15,6 +15,7 @@ where
 import Data.Char
 import Data.List
 import Data.Set hiding (drop, filter, foldl, foldr, map, null)
+import PFL2022TP1Tests
 
 ---------------------------- Types -------------------------------
 
@@ -48,7 +49,7 @@ sortPolynomial = sortBy compareMonomial
 equalLiteral :: Monomial -> Monomial -> Bool -- Verifica se a parte literal de dois monómios são iguais
 equalLiteral m1 m2 = fromList (snd m1) == fromList (snd m2)
 
-equalMonomial :: Monomial -> Monomial -> Bool -- Verficia se dois monómios são iguais 
+equalMonomial :: Monomial -> Monomial -> Bool -- Verficia se dois monómios são iguais
 equalMonomial m1 m2 = fst m1 == fst m2 && equalLiteral m1 m2
 
 equal2Polynomial :: Polynomial -> Polynomial -> Bool -- Verifica se dois polinómios são iguais
@@ -110,10 +111,10 @@ prodPolynomials p1
 
 -------------------------------- deriv --------------------------------------
 
-reduceDerivLiterals :: Char -> [Literal] -> [Literal] -- Modifica a parte literal do monómio consoante a derivação do monómio 
+reduceDerivLiterals :: Char -> [Literal] -> [Literal] -- Modifica a parte literal do monómio consoante a derivação do monómio
 reduceDerivLiterals l l1 = [(i, j -1) | (i, j) <- l1, i == l] ++ [(i, j) | (i, j) <- l1, i /= l]
 
-derivMonomial :: Char -> Monomial -> Monomial -- Deriva um monómio em função de uma variável 
+derivMonomial :: Char -> Monomial -> Monomial -- Deriva um monómio em função de uma variável
 derivMonomial l m1 = if any (== l) [i | (i, j) <- snd m1] then (fst m1 * head [j | (i, j) <- snd m1, i == l], reduceDerivLiterals l (snd m1)) else (0, [])
 
 derivPolynomial :: Char -> Polynomial -> Polynomial -- Deriva um polinómio em função de uma variável
