@@ -1,3 +1,6 @@
+# Functional and Logic Programming
+FEUP L.EIC Y3S1
+
 # PFL_TP1_G05_09
 Primeiro Projeto de Programação Funcional e Lógica (PFL) 
 
